@@ -1,0 +1,10 @@
+python-dotenv
+openai
+together
+fastapi
+transformers[torch]
+hydra-core
+omegaconf
+bitarray
+scikit-learn
+sacrebleu
