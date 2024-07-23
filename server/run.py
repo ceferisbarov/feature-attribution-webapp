@@ -13,7 +13,7 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/explain")
-async def explain(prompt):
-    response = get_importance_values(prompt, stopwords)
+async def explain(prompt, model):
+    response = get_importance_values(prompt, stopwords, model)
 
     return {"message": response}

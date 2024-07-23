@@ -9,12 +9,7 @@ def get_red_code(intensity):
     """
     return f'\033[38;2;{str(intensity)};0;0m'
 
-def explain(prompt):
-    res = requests.get(URL+prompt)
-    print("========================================")
-    print("========================================")
-    print(res.status_code)
-    print(res.text)
-    print("========================================")
-    print("========================================")
-    return res.json()["message"]
+def explain(prompt, model):
+    res = requests.get(URL+prompt+"&model="+model)
+    if res.status_code == 200:
+        return res.json()["message"]

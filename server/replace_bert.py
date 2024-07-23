@@ -7,10 +7,10 @@ pipe = pipeline("fill-mask", model="FacebookAI/roberta-base")
 
 MASK_ID = 50264
 
-def get_importance_values(prompt, stopwords):
+def get_importance_values(prompt, stopwords, model):
     diff_list = []
 
-    original_response = ask(prompt)
+    original_response = ask(prompt, model)
     diff_list = []
     words = prompt.split()
 

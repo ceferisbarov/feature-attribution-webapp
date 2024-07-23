@@ -41,19 +41,31 @@ roberta.eval()  # disable dropout for evaluation
 
 gpt_tokenizer = GPT2Tokenizer.from_pretrained("openai-community/gpt2")
 
-def ask(content):
-    chat_completion = openai_client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": content,
-            }
-        ],
-        model="gpt-3.5-turbo",
-        seed=69
-    )
+"GPT-3.5", "LLaMA 2 7B", "Mistral 7B"
+def ask(content, model="GPT-3.5"):
+    if model=="GPT-3.5":
+        chat_completion = openai_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": content,
+                }
+            ],
+            model="gpt-3.5-turbo",
+            seed=69
+        )
 
-    return chat_completion.choices[0].message.content
+        response_text = chat_completion.choices[0].message.content
+    
+    elif model=="LLaMA 2 7B":
+        response = tg_client.chat.completions.create(
+            model="meta-llama/Llama-2-7b-chat-hf",
+            messages=[{"role": "user", "content": content}],
+        )
+
+        response_text = response.choices[0].message.content
+
+    return response_text
 
 def compare(seq1, seq2):
     tokens = roberta.encode(seq1, seq2)

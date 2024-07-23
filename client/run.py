@@ -1,9 +1,8 @@
 import streamlit as st
 from engine import explain, get_red_code
 
-def highlight(prompt):
-    result = explain(prompt)
-    # # st.write("The current movie title is", result)
+def highlight(prompt, model):
+    result = explain(prompt, model)
     span_template = '<span style="color: COLOR;">TEXT</span>'
     html_content = '<p>\n'
     for word, intensity in result:
@@ -16,8 +15,8 @@ def highlight(prompt):
 
     return html_content
 
-add_selectbox = st.sidebar.selectbox(
-    "Select an LLM.",
+model_selection = st.sidebar.selectbox(
+    "Select an LLM:",
     ("GPT-3.5", "LLaMA 2 7B", "Mistral 7B")
 )
 
@@ -25,10 +24,6 @@ st.logo("assets/horizontal.png", icon_image="assets/icon.png")
 
 prompt = st.text_input("Enter a prompt:")
 with st.empty():
-    html_content = highlight(prompt)
-    print("========================================")
-    print(html_content)
-    print("========================================")
-
-    st.write(html_content)
-    st.html(html_content)
+    if prompt:
+        html_content = highlight(prompt, model_selection)
+        st.html(html_content)
