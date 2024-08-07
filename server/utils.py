@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from together import Together
 
+from bleu import bleu_score
+
 load_dotenv()
 
 openai_client = OpenAI(
@@ -35,11 +37,11 @@ def get_local_embeddings(texts):
     
     return sentence_embeddings
 
-# Download RoBERTa already finetuned for MNLI
-roberta = torch.hub.load('pytorch/fairseq', 'roberta.large.mnli')
-roberta.eval()  # disable dropout for evaluation
+# # Download RoBERTa already finetuned for MNLI
+# roberta = torch.hub.load('pytorch/fairseq', 'roberta.large.mnli')
+# roberta.eval()  # disable dropout for evaluation
 
-gpt_tokenizer = GPT2Tokenizer.from_pretrained("openai-community/gpt2")
+# gpt_tokenizer = GPT2Tokenizer.from_pretrained("openai-community/gpt2")
 
 "GPT-3.5", "LLaMA 2 7B", "Mistral 7B"
 def ask(content, model="GPT-3.5"):
@@ -67,12 +69,12 @@ def ask(content, model="GPT-3.5"):
 
     return response_text
 
-def compare(seq1, seq2):
-    tokens = roberta.encode(seq1, seq2)
-    out = roberta.predict('mnli', tokens)
-    diff = out[0][0]
+# def compare(seq1, seq2):
+#     tokens = roberta.encode(seq1, seq2)
+#     out = roberta.predict('mnli', tokens)
+#     diff = out[0][0]
     
-    return diff.item()
+#     return diff.item()
 
 def scale_to_255(values):
     min_val = min(values)
@@ -97,3 +99,6 @@ def get_red_code(intensity):
     Intensity should be between 0 and 255.
     """
     return f'\033[38;2;{intensity};0;0m'
+
+def compare_bleu(original, new):
+    return -bleu_score(original.split(), [new.split()], max_n=3)

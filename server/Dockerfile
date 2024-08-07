@@ -9,5 +9,6 @@ COPY stopwords.txt /app/stopwords.txt
 COPY replace_bert.py /app/replace_bert.py
 COPY utils.py /app/utils.py
 COPY run.py /app/run.py
+COPY bleu.py /app/bleu.py
 
 CMD ["fastapi", "run", "/app/run.py", "--port", "8080"]

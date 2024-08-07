@@ -1,5 +1,5 @@
 from transformers import pipeline
-from utils import compare, ask, scale_to_255, get_red_code
+from utils import compare_bleu, ask, scale_to_255, get_red_code
 
 from copy import copy
 
@@ -15,16 +15,22 @@ def get_importance_values(prompt, stopwords, model):
     words = prompt.split()
 
     for i in range(len(words)):
-        temp_words = copy(words)
-        temp_words[i] = "<mask>"
-        masked_prompt = " ".join(temp_words)
-        options = pipe(masked_prompt)
-        new_prompt = masked_prompt.replace("<mask>", options[0]["token_str"])
-        new_response = ask(new_prompt)
+        if words[i] in stopwords:
+            print(words[i])
+            diff_list.append(-1)
 
-        diff_list.append(compare(original_response, new_response))
+        else:
+            temp_words = copy(words)
+            temp_words[i] = "<mask>"
+            masked_prompt = " ".join(temp_words)
+            options = pipe(masked_prompt)
+            new_prompt = masked_prompt.replace("<mask>", options[0]["token_str"])
+            new_response = ask(new_prompt)
 
+            diff_list.append(compare_bleu(original_response, new_response))
+    print(diff_list)
     diff_list = scale_to_255(diff_list)
+    print(diff_list)
 
     formatted_text = ""
     results = []
